@@ -19,6 +19,7 @@ module.exports.errorLogger = function (opts) {
         immediate = false,
         parseUA = true,
         excludes,
+        excludesRoutes,
         obfuscate,
         obfuscatePlaceholder,
         genReqId = defaultGenReqId,
@@ -39,6 +40,11 @@ module.exports.errorLogger = function (opts) {
     if (opts.immediate) {
         immediate = opts.immediate;
         delete opts.immediate;
+    }
+
+    if(opts.excludesRoutes){
+        excludesRoutes = opts.excludesRoutes;
+        delete opts.excludesRoutes;
     }
 
     if (opts.levelFn) {
@@ -74,6 +80,12 @@ module.exports.errorLogger = function (opts) {
         var startTime = process.hrtime();
 
         var app = req.app || res.app;
+
+        for(var i =0;i<excludesRoutes.length;i++){
+            if(excludesRoutes[i].indexOf(req.url)>-1){
+                return;
+            }
+        }
 
         if (!logger) {
             opts.name = (opts.name || app.settings.shortname || app.settings.name || app.settings.title || 'express');
