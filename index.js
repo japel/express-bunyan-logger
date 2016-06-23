@@ -83,7 +83,7 @@ module.exports.errorLogger = function (opts) {
 
         for(var i =0;i<excludesRoutes.length;i++){
             if(excludesRoutes[i].indexOf(req.url)>-1){
-                return;
+                return next();
             }
         }
 
